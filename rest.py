@@ -1,18 +1,15 @@
 from flask import Flask, request
 from flask import abort
 from user_group_db import UserGroup
-from duplicate_user_exception import DuplicateUserException
-from duplicate_group_exception import DuplicateGroupException
-from no_such_user_exception import NoSuchUserException
-from no_such_group_exception import NoSuchGroupException
+from user_group_db import DuplicateUserException
+from user_group_db import DuplicateGroupException
+from user_group_db import NoSuchUserException
+from user_group_db import NoSuchGroupException
 import json
 
 app = Flask(__name__)
 db = UserGroup()
 
-@app.route('/resetdb', methods=['PUT'])
-def resetdb():
-    db.reset()
 
 @app.route('/users/<userid>')
 def get_user(userid):
@@ -20,6 +17,7 @@ def get_user(userid):
         return json.dumps(db.get_user(userid))
     except NoSuchUserException:
         abort(404)
+
 
 @app.route('/users', methods=['POST'])
 def post_user():
@@ -35,6 +33,7 @@ def post_user():
     except NoSuchGroupException:
         abort(400)
 
+
 @app.route('/users/<userid>', methods=['PUT'])
 def modify_user(userid):
 
@@ -49,9 +48,6 @@ def modify_user(userid):
     except NoSuchGroupException:
         abort(400)
 
-    except Exception:
-        abort(400)
-
 
 @app.route('/users/<userid>', methods=['DELETE'])
 def delete_user(userid):
@@ -63,6 +59,7 @@ def delete_user(userid):
     except NoSuchUserException:
         abort(404)
 
+
 @app.route('/groups/<groupname>')
 def get_group(groupname):
     try:
@@ -71,6 +68,7 @@ def get_group(groupname):
 
     except NoSuchGroupException:
         abort(404)
+
 
 @app.route('/groups', methods=['POST'])
 def post_group():
@@ -94,6 +92,7 @@ def modify_group(group_name):
 
     except NoSuchUserException:
         abort(409)
+
 
 @app.route('/groups/<group_name>', methods=['DELETE'])
 def delete_group(group_name):

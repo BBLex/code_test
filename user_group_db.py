@@ -1,8 +1,5 @@
 import copy
-from duplicate_user_exception import DuplicateUserException
-from duplicate_group_exception import DuplicateGroupException
-from no_such_user_exception import NoSuchUserException
-from no_such_group_exception import NoSuchGroupException
+
 
 class UserGroup:
     def __init__(self):
@@ -13,18 +10,11 @@ class UserGroup:
         self.groups = []
         self.users = {}
 
-    def user_exists(self, userid):
-        try:
-            self.users[userid]
-            return True
-        except:
-            return False
-
     def add_user(self, new_user):
-        if not self.user_exists(new_user['userid']):
+        if not new_user['userid'] in self.users:
             for group in new_user['groups']:
-                if not self.group_exists(group):
-                     raise NoSuchGroupException('group "{0}" does not exist'.format(group))
+                if not group in self.groups:
+                    raise NoSuchGroupException('group "{0}" does not exist'.format(group))
 
             self.users[new_user['userid']] = copy.deepcopy(new_user)
 
@@ -53,56 +43,47 @@ class UserGroup:
             raise NoSuchUserException('user "{0}" does not exist'.format(userid))
 
         for group in user['groups']:
-            if not self.group_exists(group):
+            if not group in self.groups:
                 raise NoSuchGroupException('group "{0}" does not exist'.format(group))
 
         self.users[user['userid']] = user
 
-
-    def group_exists(self, group_name):
-        try:
-            self.groups.index(group_name)
-            return True
-
-        except: 
-            return False
-
     def add_group(self, group_name):
-        if self.group_exists(group_name):
+        if group_name in self.groups:
             raise DuplicateGroupException('group "{0}" already exists'.format(group_name))
         else:
             self.groups.append(group_name)
 
     def get_group(self, group_name):
         users = []
-        if not self.group_exists(group_name):
+        if not group_name in self.groups:
             raise NoSuchGroupException('group {0} does not exist'.format(group_name))
         else:
             for user_key in self.users:
                 try:
-                     self.users[user_key]['groups'].index(group_name)
-                     users.append(self.users[user_key]['userid'])
+                    self.users[user_key]['groups'].index(group_name)
+                    users.append(self.users[user_key]['userid'])
                 except:
-                     continue
+                    continue
 
         return users
 
     def delete_group(self, group_name):
-        if self.group_exists(group_name):
+        if group_name in self.groups:
             self.groups.remove(group_name)
             for username in self.users:
                 try:
                     self.users[username]['groups'].remove(group_name)
-                except Exception, e:
+                except Exception:
                     continue
         else:
             raise NoSuchGroupException('group "{0}" does not exist'.format(group_name))
 
     def update_group(self, group_name, group_members):
-        if not self.group_exists(group_name):
+        if not group_name in self.groups:
             raise NoSuchGroupException('group "{0}" does not exist'.format(group_name))
         for member in group_members:
-            if not self.user_exists(member):
+            if not member in self.users:
                 raise NoSuchUserException('user "{0}" does not exist'.format(member))
         for user in self.users:
             try:
@@ -111,3 +92,35 @@ class UserGroup:
                 continue
         for member in group_members:
             self.users[member]['groups'].append(group_name)
+
+
+class NoSuchGroupException(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
+class NoSuchUserException(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
+class DuplicateUserException(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
+class DuplicateGroupException(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
