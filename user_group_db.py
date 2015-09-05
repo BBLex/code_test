@@ -1,3 +1,9 @@
+import copy
+from duplicate_user_exception import DuplicateUserException
+from duplicate_group_exception import DuplicateGroupException
+from no_such_user_exception import NoSuchUserException
+from no_such_group_exception import NoSuchGroupException
+
 class UserGroup:
     def __init__(self):
         self.groups = []
@@ -14,33 +20,37 @@ class UserGroup:
         if not self.user_exists(new_user['userid']):
             for group in new_user['groups']:
                 if not self.group_exists(group):
-                     raise Exception('group does not exist')
-            self.users[new_user['userid']] = new_user
+                     raise NoSuchGroupException('group "{0}" does not exist'.format(group))
+
+            self.users[new_user['userid']] = copy.deepcopy(new_user)
 
         else:
-            raise Exception('user already exists')
+            raise DuplicateUserException(new_user['userid'])
 
     def get_user(self, userid): 
         try:
             user = self.users[userid]
             return user
         except:
-            raise Exception('user does not exist') 
+            raise NoSuchUserException(userid)
 
     def delete_user(self, userid): 
         try:
             self.users.pop(userid)
         except:
-            raise Exception('user does not exist')
+            raise NoSuchUserException('user "{0}" does not exist'.format(userid))
 
-    def update_user(self, user):
+    def update_user(self, userid, user):
+        if userid != user['userid']:
+            raise Exception('bad request')
+
         user_to_update = self.get_user(user['userid'])
         if user_to_update is None:
-            raise Exception('user does not exist')
+            raise NoSuchUserException('user "{0}" does not exist'.format(userid))
 
         for group in user['groups']:
             if not self.group_exists(group):
-                raise Exception('group does not exist')
+                raise NoSuchGroupException('group "{0}" does not exist'.format(group))
 
         self.users[user['userid']] = user
 
@@ -55,15 +65,14 @@ class UserGroup:
 
     def add_group(self, group_name):
         if self.group_exists(group_name):
-            return False
+            raise DuplicateGroupException('group "{0}" already exists'.format(group_name))
         else:
             self.groups.append(group_name)
-            return True
 
     def get_group(self, group_name):
         users = []
         if not self.group_exists(group_name):
-            raise Exception('group does not exist')
+            raise NoSuchGroupException('group {0} does not exist'.format(group_name))
         else:
             for user_key in self.users:
                 try:
@@ -74,7 +83,6 @@ class UserGroup:
 
         return users
 
-
     def delete_group(self, group_name):
         if self.group_exists(group_name):
             self.groups.remove(group_name)
@@ -82,7 +90,20 @@ class UserGroup:
                 try:
                     self.users[username]['groups'].remove(group_name)
                 except Exception, e:
-                    print e    
-                
+                    continue
         else:
-            raise Exception('group does not exist')            
+            raise NoSuchGroupException('group "{0}" does not exist'.format(group_name))
+
+    def update_group(self, group_name, group_members):
+        if not self.group_exists(group_name):
+            raise NoSuchGroupException('group "{0}" does not exist'.format(group_name))
+        for member in group_members:
+            if not self.user_exists(member):
+                raise NoSuchUserException('user "{0}" does not exist'.format(member))
+        for user in self.users:
+            try:
+                user['groups'].remove(group_name)
+            except:
+                continue
+        for member in group_members:
+            self.users[member]['groups'].append(group_name)
