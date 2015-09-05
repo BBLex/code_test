@@ -10,6 +10,10 @@ import json
 app = Flask(__name__)
 db = UserGroup()
 
+@app.route('/resetdb', methods=['PUT'])
+def resetdb():
+    db.reset()
+
 @app.route('/users/<userid>')
 def get_user(userid):
     try:
@@ -63,7 +67,7 @@ def delete_user(userid):
 def get_group(groupname):
     try:
         result = db.get_group(groupname)
-        return result
+        return json.dumps(result)
 
     except NoSuchGroupException:
         abort(404)

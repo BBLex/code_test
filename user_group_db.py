@@ -9,6 +9,10 @@ class UserGroup:
         self.groups = []
         self.users = {}
 
+    def reset(self):
+        self.groups = []
+        self.users = {}
+
     def user_exists(self, userid):
         try:
             self.users[userid]
