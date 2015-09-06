@@ -54,15 +54,15 @@ Group:
 
 REST endpoints
 --------------
-
+```
 GET /users/<userid>
 returns User_JSON
 
 Return codes:
 200 OK
 404 Not Found
-
-
+```
+```
 POST /users
 Payload: User_JSON
 
@@ -70,8 +70,8 @@ Return codes:
 200 OK
 409 Conflict (user already exists)
 400 Bad Request (unknown group)
-
-
+```
+```
 PUT /users/<userid>
 Payload: User_JSON
 
@@ -79,31 +79,31 @@ Return codes:
 200 OK
 404 Not Found (user not found)
 400 Bad Request (unknown group)
-
-
+```
+```
 DELETE /users/<userid>
 
 Return codes:
 200 OK
 404 Not Found (user not found)
-
-
+```
+```
 GET /groups/<groupname>
 returns Group_User_Array
 
 Return codes:
 200 OK
 404 Not Found (group doesn't exist>
-
-
+```
+```
 POST /groups
 Payload: Group
 
 Return codes:
 200 OK
 409 Conflict (group already exists)
-
-
+```
+```
 PUT /groups/<groupname>
 Payload: Group_User_Array
 
@@ -111,8 +111,9 @@ Return codes:
 200 OK
 404 Not Found (no such group)
 400 Bad Request (unknown user)
-
-
+```
+```
 DELETE /groups/<groupname>
 200 OK
 404 Not Found (no such group)
+```
