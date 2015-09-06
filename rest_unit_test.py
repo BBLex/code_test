@@ -101,6 +101,7 @@ class RestUnitTest(unittest.TestCase):
 
         def get_bad_group(groupid):
             raise NoSuchGroupException('')
+        db.get_group = get_bad_group
         rv = self.app.get('/groups/test-group')
         assert rv.status_code == 404
 
