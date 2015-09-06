@@ -146,3 +146,6 @@ class RestUnitTest(unittest.TestCase):
         db.delete_group = delete_bad_group
         rv = self.app.delete('/groups/test-group')
         assert rv.status_code == 404
+
+if __name__ == '__main__':
+    unittest.main()
