@@ -12,13 +12,13 @@ class UserGroupTest(unittest.TestCase):
         self.user_group = user_group_db.UserGroup()
 
         self.sample_user = {'userid': 'bob',
-                            'firstname': 'Bob',
-                            'lastname': 'Brown',
+                            'first_name': 'Bob',
+                            'last_name': 'Brown',
                             'groups': []}
 
         self.sample_user_2 = {'userid': 'billy',
-                              'firstname': 'Billy',
-                              'lastname': 'Braun',
+                              'first_name': 'Billy',
+                              'last_name': 'Braun',
                               'groups': []}
 
     def tearDown(self):
@@ -70,8 +70,8 @@ class UserGroupTest(unittest.TestCase):
     def test_update_user(self):
         self.user_group.users[self.sample_user['userid']] = self.sample_user
         updated_user = self.sample_user
-        updated_user['firstname'] = 'Ralph'
-        updated_user['lastname'] = 'Gordon'
+        updated_user['first_name'] = 'Ralph'
+        updated_user['last_name'] = 'Gordon'
         self.user_group.update_user(updated_user['userid'], updated_user)
         saved_user = self.user_group.users['bob']
         assert cmp(saved_user, updated_user) is 0
@@ -79,8 +79,8 @@ class UserGroupTest(unittest.TestCase):
     def test_update_user_mismatched_userid(self):
         self.user_group.users[self.sample_user['userid']] = self.sample_user
         updated_user = self.sample_user
-        updated_user['firstname'] = 'Ralph'
-        updated_user['lastname'] = 'Gordon'
+        updated_user['first_name'] = 'Ralph'
+        updated_user['last_name'] = 'Gordon'
 
         with self.assertRaises(Exception):
             self.user_group.update_user('bad_user_id', updated_user)

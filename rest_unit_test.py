@@ -13,8 +13,8 @@ class RestUnitTest(unittest.TestCase):
     def setUp(self):
         self.app = rest.app.test_client()
         self.test_user = {'userid': 'bob',
-                          'firstname': 'Bob',
-                          'lastname': 'Brown',
+                          'first_name': 'Bob',
+                          'last_name': 'Brown',
                           'groups': []}
 
     def tearDown(self):
@@ -37,8 +37,8 @@ class RestUnitTest(unittest.TestCase):
 
     def test_post_user(self):
         test_user = {'userid': 'bob',
-                     'firstname': 'Bob',
-                     'lastname': 'Brown',
+                     'first_name': 'Bob',
+                     'last_name': 'Brown',
                      'groups': []}
 
         def mock_add(mock_user):
@@ -127,7 +127,7 @@ class RestUnitTest(unittest.TestCase):
 
         db.update_group = update_group_bad_user
         rv = self.app.put('/groups/test-group', data='["charles"]')
-        assert rv.status_code == 409
+        assert rv.status_code == 400
 
         def update_group_bad_group(groupid, users):
             raise NoSuchGroupException('')

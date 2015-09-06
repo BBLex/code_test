@@ -93,7 +93,7 @@ def modify_group(group_name):
         abort(404)
 
     except NoSuchUserException:
-        abort(409)
+        abort(400)
 
 
 @app.route('/groups/<group_name>', methods=['DELETE'])

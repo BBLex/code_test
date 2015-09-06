@@ -8,8 +8,8 @@ class PlanetTestCase(unittest.TestCase):
     def setUp(self):
         self.app = rest.app.test_client()
         self.sample_user_json = ('{"userid": "jim",'
-                                 '"firstname": "Bob",'
-                                 '"lastname": "Brown",'
+                                 '"first_name": "Bob",'
+                                 '"last_name": "Brown",'
                                  '"groups": []}')
         self.sample_user_dict = json.loads(self.sample_user_json)
 
