@@ -86,6 +86,7 @@ def modify_group(group_name):
     try:
         group_members = json.loads(request.data)
         db.update_group(group_name, group_members)
+        return 'success'
 
     except NoSuchGroupException:
         abort(404)

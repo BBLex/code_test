@@ -92,3 +92,56 @@ class RestUnitTest(unittest.TestCase):
         db.update_user = delete_bad_group
         rv = self.app.put('/users/bob', data=json.dumps(self.test_user))
         assert rv.status_code == 400
+
+    def test_get_group(self):
+        db.get_group = lambda group_name: []
+        rv = self.app.get('/groups/test-group')
+        assert rv.status_code == 200
+        assert len(json.loads(rv.data)) == 0
+
+        def get_bad_group(groupid):
+            raise NoSuchGroupException('')
+        rv = self.app.get('/groups/test-group')
+        assert rv.status_code == 404
+
+    def test_post_group(self):
+        db.add_group = lambda groupname: 'success'
+        rv = self.app.post('/groups', data='{"name": "test-group"}')
+        assert rv.status_code == 200
+
+        def add_duplicate_group(self):
+            raise DuplicateGroupException('')
+
+        db.add_group = add_duplicate_group
+        rv = self.app.post('/groups', data='{"name": "test-group"}')
+        assert rv.status_code == 409
+
+    def test_put_group(self):
+        db.update_group = lambda groupid, users: 'success'
+        rv = self.app.put('/groups/test-group', data='["charles"]')
+        assert rv.status_code == 200
+
+        def update_group_bad_user(groupid, users):
+            raise NoSuchUserException('')
+
+        db.update_group = update_group_bad_user
+        rv = self.app.put('/groups/test-group', data='["charles"]')
+        assert rv.status_code == 409
+
+        def update_group_bad_group(groupid, users):
+            raise NoSuchGroupException('')
+        db.update_group = update_group_bad_group
+        rv = self.app.put('/groups/test-group', data='["charles"]')
+        assert rv.status_code == 404
+
+    def test_delete_group(self):
+        db.delete_group = lambda groupid: 'success'
+        rv = self.app.delete('/groups/test-group')
+        assert rv.status_code == 200
+
+        def delete_bad_group(groupid):
+            raise NoSuchGroupException('')
+
+        db.delete_group = delete_bad_group
+        rv = self.app.delete('/groups/test-group')
+        assert rv.status_code == 404
