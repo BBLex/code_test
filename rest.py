@@ -6,6 +6,7 @@ from user_group_db import DuplicateGroupException
 from user_group_db import NoSuchUserException
 from user_group_db import NoSuchGroupException
 import json
+import sys
 
 app = Flask(__name__)
 db = UserGroup()
@@ -106,5 +107,8 @@ def delete_group(group_name):
 
 if __name__ == '__main__':
     db = UserGroup()
-    app.run()
+    if '--external' in sys.argv:
+        app.run(host='0.0.0.0')
+    else:
+        app.run()
 
