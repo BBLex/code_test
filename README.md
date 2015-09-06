@@ -31,6 +31,7 @@ To make the server publicly available, use the --external argument:
 
 
 API DESCRIPTION
+================
 
 Data types
 ----------
