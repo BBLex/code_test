@@ -1,6 +1,7 @@
 import unittest
 import json
 import rest
+import copy
 from rest import db
 
 
@@ -37,11 +38,19 @@ class PlanetTestCase(unittest.TestCase):
         rv = self.app.post('/users', data=bad_json)
         assert rv.status_code == 400
 
-    def test_add_get_delete_group(self):
+    def test_add_duplicate_user(self):
+        rv = self.app.post('/users', data=self.sample_user_json)
+        rv = self.app.post('/users', data=self.sample_user_json)
+        assert rv.status_code == 409
+
+    def test_post_duplicate_group(self):
         rv = self.app.post('/groups', data='{"name": "test-group"}')
         assert rv.status_code == 200
         rv = self.app.post('/groups', data='{"name": "test-group"}')
         assert rv.status_code == 409
+
+    def test_add_get_delete_group(self):
+        rv = self.app.post('/groups', data='{"name": "test-group"}')
         rv = self.app.get('/groups/test-group')
         assert rv.status_code == 200
         assert 0 == len(json.loads(rv.data))
@@ -88,12 +97,34 @@ class PlanetTestCase(unittest.TestCase):
         with self.assertRaises(Exception):
             json.loads(rv.data)['groups'].index('test-group')
 
+    def test_update_user(self):
+        self.populate_db()
+        self.sample_user_dict['groups'] = ['test-group', 'test-group2']
+        self.sample_user_dict['first_name'] = "Carl"
+        self.sample_user_dict['last_name'] = "Reiner"
+        rv = self.app.put('/users/jim', data=json.dumps(self.sample_user_dict))
+        assert rv.status_code == 200
+
+    def test_delete_group_updates_users(self):
+        self.populate_db()
+        rv = self.app.get('/users/jim')
+        ret_user = json.loads(rv.data)
+        assert 'test-group' in ret_user['groups']
+        self.app.delete('/groups/test-group')
+        rv = self.app.get('/users/jim')
+        ret_user = json.loads(rv.data)
+        assert 'test-group' not in ret_user['groups']
+
+
+
     def populate_db(self):
+        local_user = copy.deepcopy(self.sample_user_dict)
         self.app.post('/groups', data='{"name": "test-group"}')
-        self.sample_user_dict['groups'] = ['test-group']
-        self.app.post('/users', data=json.dumps(self.sample_user_dict))
-        self.sample_user_dict['userid'] = 'another_user'
-        self.app.post('/users', data=json.dumps(self.sample_user_dict))
+        self.app.post('/groups', data='{"name": "test-group2"}')
+        local_user['groups'] = ['test-group']
+        self.app.post('/users', data=json.dumps(local_user))
+        local_user['userid'] = 'another_user'
+        self.app.post('/users', data=json.dumps(local_user))
 
 
 if __name__ == '__main__':
