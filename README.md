@@ -114,6 +114,8 @@ Return codes:
 ```
 ```
 DELETE /groups/<groupname>
+
+Return codes:
 200 OK
 404 Not Found (no such group)
 ```
