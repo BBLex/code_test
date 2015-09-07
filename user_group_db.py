@@ -1,7 +1,7 @@
 import copy
 
 
-class UserGroup:
+class UserGroupData:
     def __init__(self):
         self.groups = []
         self.users = {}

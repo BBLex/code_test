@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask import abort
-from user_group_db import UserGroup
+from user_group_db import UserGroupData
 from user_group_db import DuplicateUserException
 from user_group_db import DuplicateGroupException
 from user_group_db import NoSuchUserException
@@ -9,7 +9,7 @@ import json
 import sys
 
 app = Flask(__name__)
-db = UserGroup()
+db = UserGroupData()
 
 
 @app.route('/users/<userid>')
@@ -106,7 +106,7 @@ def delete_group(group_name):
         abort(404)
 
 if __name__ == '__main__':
-    db = UserGroup()
+    db = UserGroupData()
     if '--external' in sys.argv:
         app.run(host='0.0.0.0')
     else:
