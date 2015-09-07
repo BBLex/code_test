@@ -15,7 +15,7 @@ Steps to run REST service:
 2. cd into 'code_test':  
    >cd code_test
 
-3. Run virtualenv:  
+3. Create a virtual environment:  
    >virtualenv venv
 
 4. Activate the virtual environment:  
