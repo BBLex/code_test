@@ -110,7 +110,7 @@ class RestUnitTest(unittest.TestCase):
         rv = self.app.post('/groups', data='{"name": "test-group"}')
         assert rv.status_code == 200
 
-        def add_duplicate_group(self):
+        def add_duplicate_group(myself):
             raise DuplicateGroupException('')
 
         db.add_group = add_duplicate_group

@@ -138,13 +138,13 @@ class UserGroupTest(unittest.TestCase):
 
         users = self.user_group.get_group('test_group')
         assert len(users) is 1
-        assert users.index('bob') >= 0
+        assert 'bob' in users
 
         self.user_group.users[self.sample_user_2['userid']]['groups'].append('test_group')
         users = self.user_group.get_group('test_group')
         assert len(users) is 2
-        assert users.index('bob') >= 0
-        assert users.index('billy') >= 0
+        assert 'bob' in users
+        assert 'billy' in users
 
     def test_update_group_add_all_users(self):
         self.user_group.groups = ['test_group']
@@ -153,8 +153,8 @@ class UserGroupTest(unittest.TestCase):
 
         self.user_group.update_group('test_group', ['bob', 'billy'])
 
-        assert self.user_group.users['bob']['groups'].index('test_group') >= 0
-        assert self.user_group.users['billy']['groups'].index('test_group') >= 0
+        assert 'test_group' in self.user_group.users['bob']['groups']
+        assert 'test_group' in self.user_group.users['billy']['groups']
 
     def test_update_group_add_one_user(self):
         self.user_group.groups = ['test_group']
@@ -163,9 +163,19 @@ class UserGroupTest(unittest.TestCase):
 
         self.user_group.update_group('test_group', ['bob'])
 
-        assert self.user_group.users['bob']['groups'].index('test_group') >= 0
-        with self.assertRaises(Exception):
-            assert self.user_group.users['billy']['groups'].index('test_group') >= 0
+        assert 'test_group' in self.user_group.users['bob']['groups']
+        assert 'test_group' not in self.user_group.users['billy']['groups']
+
+    def test_update_group_remove_one_add_one(self):
+        self.user_group.groups = ['test_group']
+        self.sample_user['groups'] = ['test_group']
+        self.user_group.users = {self.sample_user['userid']: self.sample_user,
+                                 self.sample_user_2['userid']: self.sample_user_2}
+
+        self.user_group.update_group('test_group', ['billy'])
+
+        assert 'test_group' in self.user_group.users['billy']['groups']
+        assert 'test_group' not in self.user_group.users['bob']['groups']
 
     def test_update_group_with_nonexistent_group(self):
         self.user_group.users = {self.sample_user['userid']: self.sample_user,

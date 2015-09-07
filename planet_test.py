@@ -39,7 +39,7 @@ class PlanetTestCase(unittest.TestCase):
         assert rv.status_code == 400
 
     def test_add_duplicate_user(self):
-        rv = self.app.post('/users', data=self.sample_user_json)
+        self.app.post('/users', data=self.sample_user_json)
         rv = self.app.post('/users', data=self.sample_user_json)
         assert rv.status_code == 409
 
@@ -50,7 +50,7 @@ class PlanetTestCase(unittest.TestCase):
         assert rv.status_code == 409
 
     def test_add_get_delete_group(self):
-        rv = self.app.post('/groups', data='{"name": "test-group"}')
+        self.app.post('/groups', data='{"name": "test-group"}')
         rv = self.app.get('/groups/test-group')
         assert rv.status_code == 200
         assert 0 == len(json.loads(rv.data))
@@ -78,8 +78,8 @@ class PlanetTestCase(unittest.TestCase):
         assert rv.status_code == 200
         ret_array = json.loads(rv.data)
         assert 2 == len(ret_array)
-        assert ret_array.index('jim') >= 0
-        assert ret_array.index('another_user') >= 0
+        assert 'jim' in ret_array
+        assert 'another_user' in ret_array
 
     def test_delete_group(self):
         self.populate_db()
@@ -89,13 +89,11 @@ class PlanetTestCase(unittest.TestCase):
 
         rv = self.app.get('/users/jim')
         assert rv.status_code == 200
-        with self.assertRaises(Exception):
-            json.loads(rv.data)['groups'].index('test-group')
+        assert 'test-group' not in json.loads(rv.data)['groups']
 
         rv = self.app.get('/users/another_user')
         assert rv.status_code == 200
-        with self.assertRaises(Exception):
-            json.loads(rv.data)['groups'].index('test-group')
+        assert 'test-group' not in json.loads(rv.data)['groups']
 
     def test_update_user(self):
         self.populate_db()
@@ -114,8 +112,6 @@ class PlanetTestCase(unittest.TestCase):
         rv = self.app.get('/users/jim')
         ret_user = json.loads(rv.data)
         assert 'test-group' not in ret_user['groups']
-
-
 
     def populate_db(self):
         local_user = copy.deepcopy(self.sample_user_dict)

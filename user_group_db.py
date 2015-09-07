@@ -60,11 +60,8 @@ class UserGroup:
             raise NoSuchGroupException('group {0} does not exist'.format(group_name))
         else:
             for user_key in self.users:
-                try:
-                    self.users[user_key]['groups'].index(group_name)
+                if group_name in self.users[user_key]['groups']:
                     users.append(self.users[user_key]['userid'])
-                except:
-                    continue
 
         return users
 
@@ -72,10 +69,8 @@ class UserGroup:
         if group_name in self.groups:
             self.groups.remove(group_name)
             for username in self.users:
-                try:
+                if group_name in self.users[username]['groups']:
                     self.users[username]['groups'].remove(group_name)
-                except Exception:
-                    continue
         else:
             raise NoSuchGroupException('group "{0}" does not exist'.format(group_name))
 
@@ -85,11 +80,9 @@ class UserGroup:
         for member in group_members:
             if not member in self.users:
                 raise NoSuchUserException('user "{0}" does not exist'.format(member))
-        for user in self.users:
-            try:
-                user['groups'].remove(group_name)
-            except:
-                continue
+        for username in self.users:
+            if group_name in self.users[username]['groups']:
+                self.users[username]['groups'].remove(group_name)
         for member in group_members:
             self.users[member]['groups'].append(group_name)
 
