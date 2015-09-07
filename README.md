@@ -32,6 +32,8 @@ At this point, you should have a server running at http://127.0.0.1:5000/
 To make the server publicly available, use the --external argument:  
 >python rest.py --external
 
+NOTE: The server runs in debug mode running locally (without --external). Running with --external disables debug mode.
+
 
 RUNNING THE TESTS
 =================

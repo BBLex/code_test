@@ -108,7 +108,7 @@ def delete_group(group_name):
 if __name__ == '__main__':
     db = UserGroupData()
     if '--external' in sys.argv:
-        app.run(host='0.0.0.0')
+        app.run(host='0.0.0.0', debug=False)
     else:
-        app.run()
+        app.run(debug=True)
 
