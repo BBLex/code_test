@@ -22,7 +22,7 @@ Steps to run REST service:
    >. venv/bin/activate
 
 5. Install Flask in the virtual environment:  
-   >sudo pip install Flask
+   >pip install Flask
 
 6. Start the server:  
    >python rest.py
