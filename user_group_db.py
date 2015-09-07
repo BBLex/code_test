@@ -21,12 +21,11 @@ class UserGroupData:
         else:
             raise DuplicateUserException(new_user['userid'])
 
-    def get_user(self, userid): 
-        try:
-            user = self.users[userid]
-            return user
-        except:
-            raise NoSuchUserException(userid)
+    def get_user(self, userid):
+        if userid in self.users:
+            return self.users[userid]
+        else:
+            raise NoSuchUserException('user "{0}" does not exist'.format(userid))
 
     def delete_user(self, userid): 
         try:
@@ -38,8 +37,7 @@ class UserGroupData:
         if userid != user['userid']:
             raise Exception('bad request')
 
-        user_to_update = self.get_user(user['userid'])
-        if user_to_update is None:
+        if user['userid'] not in self.users:
             raise NoSuchUserException('user "{0}" does not exist'.format(userid))
 
         for group in user['groups']:
