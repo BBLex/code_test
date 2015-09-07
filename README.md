@@ -15,14 +15,14 @@ Steps to run REST service:
 2. cd into 'code_test':  
    >cd code_test
 
-3. Run virtualenv:  
+3. Create a virtual environment:  
    >virtualenv venv
 
 4. Activate the virtual environment:  
    >. venv/bin/activate
 
 5. Install Flask in the virtual environment:  
-   >sudo pip install Flask
+   >pip install Flask
 
 6. Start the server:  
    >python rest.py
@@ -91,7 +91,7 @@ Return codes:
 ```
 ```
 PUT /users/<userid>
-Payload: User_JSON
+Payload: User
 
 Return codes:
 200 OK
