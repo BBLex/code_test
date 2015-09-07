@@ -91,7 +91,7 @@ Return codes:
 ```
 ```
 PUT /users/<userid>
-Payload: User_JSON
+Payload: User
 
 Return codes:
 200 OK
