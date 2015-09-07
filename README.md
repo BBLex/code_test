@@ -3,7 +3,7 @@ RUNNING THE SERVER
 
 Requirements:
 - Python 2.7.6
-- virtualenv:
+- virtualenv:  
   >sudo pip install virtualenv
 
 
